@@ -103,9 +103,7 @@ describe('HotelsController', () => {
   it('delegates hotel detail lookup by id', async () => {
     service.getHotel.mockResolvedValue(hotelDetail);
 
-    await expect(controller.getHotel('hotel-01')).resolves.toEqual(
-      hotelDetail,
-    );
+    await expect(controller.getHotel('hotel-01')).resolves.toEqual(hotelDetail);
     expect(service.getHotel.mock.calls).toEqual([['hotel-01']]);
   });
 
@@ -119,8 +117,6 @@ describe('HotelsController', () => {
     await expect(
       controller.getAvailableRooms('hotel-01', query),
     ).resolves.toEqual([availableRoom]);
-    expect(service.getAvailableRooms.mock.calls).toEqual([
-      ['hotel-01', query],
-    ]);
+    expect(service.getAvailableRooms.mock.calls).toEqual([['hotel-01', query]]);
   });
 });

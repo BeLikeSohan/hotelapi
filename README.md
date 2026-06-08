@@ -2,6 +2,12 @@
 
 Hotel Discovery API built with NestJS, TypeScript, PostgreSQL, and TypeORM.
 
+## Prerequisites
+
+- Node.js 20 or newer.
+- npm.
+- Docker and Docker Compose for the local PostgreSQL and pgAdmin stack.
+
 ## Project setup
 
 ```bash
@@ -23,7 +29,7 @@ $ docker compose up --build
 
 pgAdmin login:
 
-- Email: `admin@hotelapi.local`
+- Email: `admin@example.com`
 - Password: `admin_password`
 
 Register the database server in pgAdmin with these values:
@@ -97,3 +103,39 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+`npm run test:e2e` expects PostgreSQL to be running and reachable through the values in `.env`.
+
+## Example API requests
+
+```bash
+# list all hotels
+$ curl http://localhost:3000/hotels
+
+# filter hotels
+$ curl "http://localhost:3000/hotels?city=Chicago&star_rating=5&min_price=150&max_price=300"
+
+# get full hotel details
+$ curl http://localhost:3000/hotels/hotel-01
+
+# get available rooms for a stay window
+$ curl "http://localhost:3000/hotels/hotel-01/rooms?check_in=2026-07-10&check_out=2026-07-12"
+```
+
+Swagger documentation is available at `http://localhost:3000/docs` when the API is running.
+
+## Architecture summary
+
+The app keeps HTTP, business rules, and persistence separated:
+
+- `HotelsController` exposes the public REST endpoints and delegates work to the service.
+- `HotelsService` owns validation that spans multiple fields, not-found handling, availability window calculation, and response serialization.
+- `HotelsRepository` hides TypeORM query details behind a small repository interface.
+- TypeORM entities and checked-in migrations define the PostgreSQL schema.
+- The seed script loads the stable mock dataset idempotently for local development and tests.
+
+Global Nest validation strips unknown query fields, transforms primitive query values, and rejects malformed input with `400 Bad Request`.
+
+## AI tooling disclosure
+
+AI assistance was used to review the assignment, draft implementation and documentation changes, and support code generation. Generated output was reviewed, edited, and validated before submission.

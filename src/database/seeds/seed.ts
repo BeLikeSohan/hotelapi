@@ -1,4 +1,4 @@
-import { EntityManager } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import dataSource from '../data-source';
 import { seedHotels } from './hotel-seed-data';
 
@@ -41,10 +41,10 @@ async function queryRows<T>(
   return result as T[];
 }
 
-async function seed(): Promise<void> {
-  await dataSource.initialize();
-
-  await dataSource.transaction(async (manager) => {
+export async function seedDatabase(
+  source: DataSource = dataSource,
+): Promise<void> {
+  await source.transaction(async (manager) => {
     const hotelIds = seedHotels.map((hotel) => hotel.id);
     const roomIds = seedHotels.flatMap((hotel) =>
       hotel.rooms.map((room) => room.id),
@@ -243,24 +243,31 @@ async function seed(): Promise<void> {
   });
 }
 
-void seed()
-  .then(() => {
-    const roomCount = seedHotels.reduce(
-      (count, hotel) => count + hotel.rooms.length,
-      0,
-    );
+async function runSeedScript(): Promise<void> {
+  await dataSource.initialize();
+  await seedDatabase(dataSource);
+}
 
-    console.log(
-      `Seeded ${seedHotels.length} hotels and ${roomCount} rooms successfully.`,
-    );
-  })
-  .catch((error: unknown) => {
-    console.error('Seed failed.');
-    console.error(error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    if (dataSource.isInitialized) {
-      await dataSource.destroy();
-    }
-  });
+if (require.main === module) {
+  void runSeedScript()
+    .then(() => {
+      const roomCount = seedHotels.reduce(
+        (count, hotel) => count + hotel.rooms.length,
+        0,
+      );
+
+      console.log(
+        `Seeded ${seedHotels.length} hotels and ${roomCount} rooms successfully.`,
+      );
+    })
+    .catch((error: unknown) => {
+      console.error('Seed failed.');
+      console.error(error);
+      process.exitCode = 1;
+    })
+    .finally(async () => {
+      if (dataSource.isInitialized) {
+        await dataSource.destroy();
+      }
+    });
+}
