@@ -42,6 +42,9 @@ Register the database server in pgAdmin with these values:
 
 ## Database setup
 
+> Warning: Run the database migration before starting the API for the first time.
+> Using `synchronize: false`, so the application will not create tables automatically.
+
 TypeORM runs with `synchronize: false`, so the application does not create or update database tables on startup. Run migrations before starting the API against a fresh database.
 
 For local development, start PostgreSQL first:
