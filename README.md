@@ -31,6 +31,31 @@
 $ npm install
 ```
 
+## Docker setup
+
+The Docker stack runs the NestJS API, PostgreSQL 18, and pgAdmin 4.
+
+```bash
+$ docker compose up --build
+```
+
+- API: `http://localhost:3000`
+- PostgreSQL: `localhost:5432`
+- pgAdmin: `http://localhost:5050`
+
+pgAdmin login:
+
+- Email: `admin@hotelapi.local`
+- Password: `admin_password`
+
+Register the database server in pgAdmin with these values:
+
+- Host: `postgres`
+- Port: `5432`
+- Database: `hotelapi`
+- Username: `hotelapi`
+- Password: `hotelapi_password`
+
 ## Compile and run the project
 
 ```bash
