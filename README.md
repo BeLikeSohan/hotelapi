@@ -23,12 +23,13 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Hotel Discovery API built with NestJS, TypeScript, PostgreSQL, and TypeORM.
 
 ## Project setup
 
 ```bash
 $ npm install
+$ cp .env.example .env
 ```
 
 ## Docker setup
@@ -56,9 +57,44 @@ Register the database server in pgAdmin with these values:
 - Username: `hotelapi`
 - Password: `hotelapi_password`
 
+## Database setup
+
+TypeORM runs with `synchronize: false`, so the application does not create or update database tables on startup. Run migrations before starting the API against a fresh database.
+
+For local development, start PostgreSQL first:
+
+```bash
+$ docker compose up -d postgres
+```
+
+Then apply the schema migration:
+
+```bash
+$ npm run migration:run
+```
+
+Load the mock hotel dataset:
+
+```bash
+$ npm run seed
+```
+
+The seed script is idempotent and can be rerun. It upserts hotels, rooms, amenities, join tables, and room availability dates.
+
+To revert the most recent migration:
+
+```bash
+$ npm run migration:revert
+```
+
 ## Compile and run the project
 
 ```bash
+# first-time local database setup
+$ docker compose up -d postgres
+$ npm run migration:run
+$ npm run seed
+
 # development
 $ npm run start
 
